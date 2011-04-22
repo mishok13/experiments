@@ -1,3 +1,4 @@
+<h1>Current notes</h1>
 {% if oldest_notes %}
 <ul>
 {% for note in oldest_notes %}
@@ -7,3 +8,14 @@
 {% else %}
 <p>No notes yet</p>
 {% endif %}
+
+<h1>Add new note</h1>
+
+<form action="/notes/add/" method="post">
+{% csrf_token %}
+<input type="text" name="text" id="note_text" value="" />
+<label for="note_text">The text of the note</label><br />
+<input type="text" name="tags" id="note_tags" value="" />
+<label for="note_tags">Tags</label><br />
+<input type="submit" value="Add" />
+</form>

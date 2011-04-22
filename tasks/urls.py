@@ -7,6 +7,7 @@ admin.autodiscover()
 urlpatterns = patterns(
     '',
     url(r'index', 'notes.views.index'),
+    url(r'^notes/add/$', 'notes.views.add'),
     url(r'^notes/(?P<note_id>\d+)/$', 'notes.views.details'),
     url(r'^admin/', include(admin.site.urls)),
     )
