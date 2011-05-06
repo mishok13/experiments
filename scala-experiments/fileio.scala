@@ -1,0 +1,5 @@
+val src = scala.io.Source.fromFile("/etc/passwd")
+val dest = new java.io.PrintWriter(new java.io.File("test.txt"))
+src.getLines().foreach(dest.println(_))
+dest.close()
+src.close()
