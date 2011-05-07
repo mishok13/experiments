@@ -1,20 +1,29 @@
-package net.mishkovskyi.rbtree{
+package net.mishkovskyi.tree{
 
-  abstract class Tree {
-    def insert(value: Node): Unit
-    def delete(value: Node): Unit
-    def walk(callback: Node => Any): Any
+  abstract class Tree[T] {
+    def insert(value: T): Tree[T]
+    def delete(value: T): Tree[T]
+    def foreach(callback: T => Any): Unit
+    def iterate(): List[T]
   }
 
-  class Node(value: Any, left: Node = null, right: Node = null) {
-    def print() = println(value)
-  }
+  class BinaryTree[T] (root: T,
+		       left: BinaryTree[T] = null,
+		       right: BinaryTree[T] = null)
+  extends Tree[T] {
 
-  class BinaryTree(root: Node = null) extends Tree {
+    def insert(value: T) = {
 
-    def insert(value: Node) = {}
-    def delete(value: Node) = {}
-    def walk(callback: Node => Any) = {}
+      this
+    }
+
+    def print() = {
+
+    }
+
+    def delete(value: T) = {this}
+    def foreach(callback: T => Any) = {}
+    def iterate() = {List()}
   }
 
 }

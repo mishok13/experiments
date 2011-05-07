@@ -1,11 +1,9 @@
-import net.mishkovskyi.rbtree._
+import net.mishkovskyi.tree._
 
-// println("wtf")
 
 object TreeApp {
   def main(args: Array[String]) {
-    var tree = new BinaryTree
-
-    println(tree)
+    var tree = new BinaryTree(12)
+    tree print
   }
 }
