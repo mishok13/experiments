@@ -75,8 +75,10 @@ class Dispatcher extends Actor {
   }
 
   def handle(connection: Socket) = {
+    println("something")
     val reader = new LineNumberReader(new InputStreamReader(connection.getInputStream))
     val writer = new OutputStreamWriter(connection.getOutputStream)
+    println(reader.readLine())
   }
 
 }
@@ -88,6 +90,7 @@ class Server(port: Int) {
 
     val socket = new ServerSocket(2345)
     val dispatcher = new Dispatcher
+    dispatcher.start
 
     while (true) {
       val connection = socket.accept()
