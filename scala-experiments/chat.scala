@@ -9,20 +9,35 @@ import scala.actors.Actor._
 import scala.collection.mutable.{ListBuffer}
 
 
-class Member(val name: String, val connection: Socket) {
+
+class Member(val name: String,
+	     val chat: Chat,
+	     val reader: LineNumberReader,
+	     val writer: OutputStreamWriter) extends Actor{
+
+  def this(chat: Chat,
+	   reader: LineNumberReader,
+	   writer: OutputStreamWriter) = {
+    this(reader.readLine(), chat, reader, writer)
+  }
 
   def send(message: String) = {
     println("%s -> %s".format(name, message))
-    // connection.send("%s -> %s".format(name, message))
+    writer.write("%s -> %s\n".format(name, message))
+    writer.flush()
+  }
+
+  def act() {
+    while (true) {
+      val line = reader.readLine()
+      chat ! (this, line)
+    }
   }
 
 }
 
 
-
-
-
-class ChatActor extends Actor {
+class Chat extends Actor {
 
   val people = new ListBuffer[Member]
 
@@ -34,7 +49,6 @@ class ChatActor extends Actor {
     }
   }
 
-
   def init(sender: Member) = {
     println(sender)
     if (people.contains(sender)) {
@@ -45,7 +59,6 @@ class ChatActor extends Actor {
     }
   }
 
-
   def error(unknown: Any) = {
     println("Unkown message: %s".format(unknown))
   }
@@ -54,7 +67,7 @@ class ChatActor extends Actor {
   def act() {
     loop {
       receive {
-	case (sender: Member, "init") => init(sender)
+	case sender: Member => init(sender)
 	case (sender: Member, msg: String) => handle(sender, msg)
 	case unknown => error(unknown)
       }
@@ -63,7 +76,7 @@ class ChatActor extends Actor {
 }
 
 
-class Dispatcher extends Actor {
+class Dispatcher(val chat: Chat) extends Actor {
 
   def act() {
     loop {
@@ -75,10 +88,11 @@ class Dispatcher extends Actor {
   }
 
   def handle(connection: Socket) = {
-    println("something")
     val reader = new LineNumberReader(new InputStreamReader(connection.getInputStream))
     val writer = new OutputStreamWriter(connection.getOutputStream)
-    println(reader.readLine())
+    val member = new Member(chat, reader, writer)
+    chat ! member
+    member.start
   }
 
 }
@@ -89,8 +103,10 @@ class Server(port: Int) {
   def start() = {
 
     val socket = new ServerSocket(2345)
-    val dispatcher = new Dispatcher
+    val chat = new Chat
+    val dispatcher = new Dispatcher(chat)
     dispatcher.start
+    chat.start
 
     while (true) {
       val connection = socket.accept()
@@ -106,7 +122,7 @@ object ChatApp {
 
   def main(args: Array[String]) {
     new Server(2345).start
-    // val chat = new ChatActor
+    // val chat = new Chat
     // val andy = new Member("Andy")
     // val andy2 = new Member("Andy")
     // val bram = new Member("Bram")
