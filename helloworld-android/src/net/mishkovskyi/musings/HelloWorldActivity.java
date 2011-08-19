@@ -5,10 +5,11 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.content.SharedPreferences;
 import android.widget.TextView;
+import android.view.View;
 import android.widget.LinearLayout;
 import java.util.List;
 import java.util.Arrays;
-import net.mishkovskyi.musings.TaskView;
+import java.util.TreeSet;
 
 public class HelloWorldActivity extends Activity
 {
@@ -25,7 +26,7 @@ public class HelloWorldActivity extends Activity
         mainLayout.setOrientation(LinearLayout.VERTICAL);
         List<String> tasks = Arrays.asList("First", "Foo", "Bar", "42");
         for (String task: tasks) {
-            TaskView taskView = new TaskView(this);
+            TextView taskView = new TextView(this);
             taskView.setText(task);
             mainLayout.addView(taskView);
         }
@@ -35,5 +36,9 @@ public class HelloWorldActivity extends Activity
     @Override
     public void onStop() {
         super.onStop();
+    }
+
+    public void onClick(View view) {
+
     }
 }
